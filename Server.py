@@ -1,50 +1,52 @@
 import socket
 import json
+import threading
 
-while True:
-    try:
-        with open('usersDB.txt', 'r+') as f:
-            usersDB = json.loads(f.read())
+logined = []
 
-        sock = socket.socket()  # Кoнфиг
-        sock.bind(('', 9090))
-        sock.listen(1)
+print('Server started')
 
-        print('Server started')  # Приём соединения
+def accept_clients():  # Приём новых клиентов
+    while True:
         conn, addr = sock.accept()
         print('connected:', addr)
+        proc_client_thread = threading.Thread(target= process_client,args= (conn,))
+        proc_client_thread.start()
 
+
+def process_client(client):  # Обработка соединения
+    try:
         while True:
-            data = conn.recv(1024)  # Логин
+            data = client.recv(1024)  # Логин
             login = data.decode()
             print(login)
-            if login in usersDB:
+            if login in usersDB and login not in logined:
                 status = 'OK'
             else:
                 status = 'ERR'
-            conn.send(status.encode())
+            client.send(status.encode())
             if status == 'OK':
                 break
 
         while True:
-            data = conn.recv(1024)  # Пароль
+            data = client.recv(1024)  # Пароль
             password = data.decode()
             print(password)
             if password == usersDB[login]:
                 status = 'OK'
             else:
                 status = 'ERR'
-            conn.send(status.encode())
+            client.send(status.encode())
             if status == 'OK':
                 break
-
+        logined.append(login)
         with open(login+'.txt', 'r+') as f:  # Отправка архива сообщений
             data = f.read()
-            conn.send(data.encode())
+            client.send(data.encode())
             msgDB = json.loads(data)
 
         while True:
-            data = conn.recv(1024)  # Получение сообщений
+            data = client.recv(1024)  # Получение сообщений
             msg = data.decode()
             print(msg)
             msgDB.append(msg)
@@ -53,6 +55,24 @@ while True:
 
         with open(login+'.txt', 'r+') as f:
             f.write(json.dumps(msgDB))
-        conn.close()
+        client.close()
+        logined.remove(login)
     except:
         print('Oops, something went wrong')
+        logined.remove(login)
+
+
+try:
+    with open('usersDB.txt', 'r+') as f:
+        usersDB = json.loads(f.read())
+
+    sock = socket.socket()  # Конфиг
+    sock.bind(('', 9090))
+    sock.listen(1)
+
+    client_listen_thread = threading.Thread(target= accept_clients)  # Запуск приёма новых клиентов
+    client_listen_thread.start()
+
+except Exception as e:
+    sock.close()
+    print('Oops, something went wrong:' + e)
