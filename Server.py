@@ -6,7 +6,7 @@ while True:
         with open('usersDB.txt', 'r+') as f:
             usersDB = json.loads(f.read())
 
-        sock = socket.socket()  # Конфиг
+        sock = socket.socket()  # Кoнфиг
         sock.bind(('', 9090))
         sock.listen(1)
 
