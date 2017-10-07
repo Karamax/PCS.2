@@ -70,7 +70,7 @@ try:
     sock.bind(('', 9090))
     sock.listen(1)
 
-    client_listen_thread = threading.Thread(target= accept_clients)  # Запуск приёма новых клиентов
+    client_listen_thread = threading.Thread(target= accept_clients)  # Запуск приёма новых клиентoв
     client_listen_thread.start()
 
 except Exception as e:
