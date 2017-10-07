@@ -1,9 +1,6 @@
 import socket
 import json
 
-usrLogin = 'D'
-usrPass = 'q'
-
 while True:
     try:
         with open('usersDB.txt', 'r+') as f:
