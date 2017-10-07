@@ -5,7 +5,7 @@ buffer = 1024  # Конфиг
 port = 9090
 addres = 'localhost'
 try:
-    sock = socket.socket()  # Соединение
+    sock = socket.socket()  # Соединениe
     sock.connect((addres, port))
     while True:
         sock.send(input('Enter login:').encode())  # Логин
