@@ -6,11 +6,12 @@ logined = []
 
 print('Server started')
 
+
 def accept_clients():  # Приём новых клиентов
     while True:
         conn, addr = sock.accept()
         print('connected:', addr)
-        proc_client_thread = threading.Thread(target= process_client,args= (conn,))
+        proc_client_thread = threading.Thread(target=process_client, args=(conn,))
         proc_client_thread.start()
 
 
@@ -57,8 +58,8 @@ def process_client(client):  # Обработка соединения
             f.write(json.dumps(msgDB))
         client.close()
         logined.remove(login)
-    except:
-        print('Oops, something went wrong')
+    except Exception as e:
+        print('Oops, something went wrong: ' + e)
         logined.remove(login)
 
 
