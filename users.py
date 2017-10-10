@@ -5,8 +5,6 @@ work = True
 with open('usersDB.txt', 'r+') as f:  # Чтение базы пользователей
     usersDB = json.loads(f.read())
 
-print('Select operation: 1 - add, 2 - remove, 3 - change password')
-
 
 def addUser():
     print('Enter username')
@@ -56,10 +54,11 @@ def exitProg():
     return
 
 
-operationId = input()
-
-operation = {'1': addUser, '2': removeUser, '3': changePass, '4': exitProg}
-operation.get(operationId, wrongId)()
+while work:
+    print('Select operation: 1 - add, 2 - remove, 3 - change password, 4 - exit program')
+    operationId = input()
+    operation = {'1': addUser, '2': removeUser, '3': changePass, '4': exitProg}
+    operation.get(operationId, wrongId)()
 
 with open('usersDB.txt', 'w') as f:
     f.write(json.dumps(usersDB))
