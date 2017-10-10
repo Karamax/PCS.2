@@ -34,13 +34,19 @@ def removeUser():
 
 
 def changePass():
-    print(3)
+    print('Enter username')
+    username = input()
+    if username not in usersDB:
+        print('User does not exist')
+        return
+    print('Enter new password')
+    password = input()
+    usersDB[username] = password
     return
 
 
 def wrongId():
     print('Wrong input.')
-    print('Select operation: 1 - add, 2 - remove, 3 - change password')
     return
 
 
