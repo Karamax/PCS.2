@@ -1,4 +1,5 @@
 import json
+import os
 
 work = True
 with open('usersDB.txt', 'r+') as f:  # Чтение базы пользователей
@@ -22,7 +23,13 @@ def addUser():
 
 
 def removeUser():
-    print(2)
+    print('Enter username')
+    username = input()
+    if username not in usersDB:
+        print('User does not exist')
+        return
+    del usersDB[username]
+    os.remove(username+'.txt')
     return
 
 
