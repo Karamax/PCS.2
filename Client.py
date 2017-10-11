@@ -1,5 +1,6 @@
 import socket
 import json
+from tkinter import *
 
 buffer = 1024  # Конфиг
 port = 9090
