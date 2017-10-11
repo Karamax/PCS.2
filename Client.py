@@ -2,6 +2,9 @@ import socket
 import json
 from tkinter import *
 
+root = Tk()
+
+
 buffer = 1024  # Конфиг
 port = 9090
 addres = 'localhost'
