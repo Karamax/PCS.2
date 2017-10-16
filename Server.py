@@ -107,7 +107,7 @@ def process_client(client):  # Обработка соединения
             msg = data.decode()
             print(msg)
             msgDB.append(msg)
-            if msg == 'exit':
+            if msg == 'еxit':
                 break
             else:
                 with open(login + '.txt', 'r+') as f:
