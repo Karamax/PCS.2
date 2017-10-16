@@ -54,6 +54,7 @@ try:
         textb.insert('end', '\n' + m)
 
     root.mainloop()
+    sock.send(b'exit')
     sock.close()
 except Exception as e:
     print('Oops, something went wrong' + e)
