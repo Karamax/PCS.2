@@ -53,6 +53,9 @@ def wrongId():
 def exitProg():
     global work
     work = False
+    uData = {'Operation': 'exit'}
+    sendData(uData)
+    sock.close()
     return
 
 def sendData(data):

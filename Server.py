@@ -23,46 +23,51 @@ def accept_managers():
         proc_client_thread.start()
 
 def process_mamager(manager):
-    try:
-        data = manager.recv(1024)
-        data = json.loads(data)
-        response = b'OK'
-        if data['Operation'] == 'add':
-            print('add op')
-            if data['Login'] in usersDB:
-                print('User already created')
-                response = b'ERR'
-            else:
-                usersDB[data['Login']] = data['Password']
-                with open(data['Login'] + '.txt', 'w') as f:
-                    f.write(json.dumps([]))
-        if data['Operation'] == 'remv':
-            print('remv op')
-            if data['Login'] not in usersDB:
-                print('User does not exist')
-                response = b'ERR'
-            else:
-                if data['Login'] in logined:
+    while True:
+        try:
+            data = manager.recv(1024)
+            data = json.loads(data)
+            response = b'OK'
+            if data['Operation'] == 'add':
+                print('add op')
+                if data['Login'] in usersDB:
+                    print('User already created')
                     response = b'ERR'
-                    print('User logined')
                 else:
-                    del usersDB[data['Login']]
-                    os.remove(data['Login'] + '.txt')
-        if data['Operation'] == 'chan':
-            print('add op')
-            if data['Login'] not in usersDB:
-                print('User does not exist')
-                response = b'ERR'
+                    usersDB[data['Login']] = data['Password']
+                    with open(data['Login'] + '.txt', 'w') as f:
+                        f.write(json.dumps([]))
+            if data['Operation'] == 'remv':
+                print('remv op')
+                if data['Login'] not in usersDB:
+                    print('User does not exist')
+                    response = b'ERR'
+                else:
+                    if data['Login'] in logined:
+                        response = b'ERR'
+                        print('User logined')
+                    else:
+                        del usersDB[data['Login']]
+                        os.remove(data['Login'] + '.txt')
+            if data['Operation'] == 'chan':
+                print('add op')
+                if data['Login'] not in usersDB:
+                    print('User does not exist')
+                    response = b'ERR'
+                else:
+                    usersDB[data['Login']] = data['Password']
+
+            with open('usersDB.txt', 'w') as f:
+                f.write(json.dumps(usersDB))
+
+            if data['Operation'] == 'exit':
+                manager.close()
+                return
             else:
-                usersDB[data['Login']] = data['Password']
-
-        with open('usersDB.txt', 'w') as f:
-            f.write(json.dumps(usersDB))
-
-        manager.send(response)
-        manager.close()
-    except:
-        print('Manager thread error')
+                manager.send(response)
+            #manager.close()
+        except Exception as e:
+            print('Manager thread error' + e)
 
 
 
