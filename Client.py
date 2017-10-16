@@ -31,6 +31,8 @@ try:
 
     while True:
         var = tkinter.simpledialog.askstring("Name prompt", "enter your pass")
+        import hmac, hashlib
+        var = hmac.new(bytearray('signature', 'utf-8'), bytearray(var, 'utf-8'), hashlib.sha256).hexdigest()
         sock.send(var.encode())  # Пароль
         status = sock.recv(buffer).decode()
         print(status)

@@ -21,6 +21,8 @@ def addUser():
     print('Enter password')
     #password = input()
     password = sd.askstring("Enter password:", "Enter password")
+    import hmac, hashlib
+    password = hmac.new(bytearray('signature', 'utf-8'), bytearray(password, 'utf-8'), hashlib.sha256).hexdigest()
     uData = {'Operation': 'add', 'Login': username, 'Password': password}
     sendData(uData)
     return
@@ -39,6 +41,8 @@ def changePass():
     username = sd.askstring("Enter username:", "Enter username")
     print('Enter new password')
     password = sd.askstring("Enter password:", "Enter password")
+    import hmac, hashlib
+    password = hmac.new(bytearray('signature', 'utf-8'), bytearray(password, 'utf-8'), hashlib.sha256).hexdigest()
     uData = {'Operation': 'chan', 'Login': username, 'Password': password}
     sendData(uData)
     return
