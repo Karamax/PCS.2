@@ -1,6 +1,7 @@
 import socket
 import json
 import threading
+import os
 
 logined = []
 
@@ -26,7 +27,7 @@ def process_mamager(manager):
         data = manager.recv(1024)
         data = json.loads(data)
         response = b'OK'
-        if(data['Operation'] == 'add'):
+        if data['Operation'] == 'add':
             print('add op')
             if data['Login'] in usersDB:
                 print('User already created')
@@ -35,10 +36,25 @@ def process_mamager(manager):
                 usersDB[data['Login']] = data['Password']
                 with open(data['Login'] + '.txt', 'w') as f:
                     f.write(json.dumps([]))
-        if (data['Operation'] == 'remv'):
+        if data['Operation'] == 'remv':
+            print('remv op')
+            if data['Login'] not in usersDB:
+                print('User does not exist')
+                response = b'ERR'
+            else:
+                if data['Login'] in logined:
+                    response = b'ERR'
+                    print('User logined')
+                else:
+                    del usersDB[data['Login']]
+                    os.remove(data['Login'] + '.txt')
+        if data['Operation'] == 'chan':
             print('add op')
-        if (data['Operation'] == 'chan'):
-            print('add op')
+            if data['Login'] not in usersDB:
+                print('User does not exist')
+                response = b'ERR'
+            else:
+                usersDB[data['Login']] = data['Password']
 
         with open('usersDB.txt', 'w') as f:
             f.write(json.dumps(usersDB))
