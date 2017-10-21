@@ -1,5 +1,19 @@
 import socket
 import json
+from tkinter import *
+import tkinter.simpledialog
+
+root = Tk()
+
+
+def sayTest(event):
+    print(inputField.get())
+    msg = inputField.get()
+    sock.send(msg.encode())
+    textb.insert('end', '\n' + inputField.get())
+    inputField.delete(0, 'end')
+    if msg == 'exit':
+        root.destroy()
 
 buffer = 1024  # Конфиг
 port = 9090
@@ -8,31 +22,41 @@ try:
     sock = socket.socket()  # Соединениe
     sock.connect((addres, port))
     while True:
-        sock.send(input('Enter login:').encode())  # Логин
+        var = tkinter.simpledialog.askstring("Name prompt", "enter your name")
+        sock.send(var.encode())  # Логин
         status = sock.recv(buffer).decode()
         print(status)
         if status == 'OK':
             break
 
     while True:
-        sock.send(input('Enter password:').encode())  # Пароль
+        var = tkinter.simpledialog.askstring("Name prompt", "enter your pass")
+        import hmac, hashlib
+        var = hmac.new(bytearray('signature', 'utf-8'), bytearray(var, 'utf-8'), hashlib.sha256).hexdigest()
+        sock.send(var.encode())  # Пароль
         status = sock.recv(buffer).decode()
         print(status)
         if status == 'OK':
             break
+
 
     print('Login and password accepted.')
-    msgDB = sock.recv(buffer).decode()  # Получение архива сообщений
+    msgDB = sock.recv(buffer).decode()  # Получение архива сообqщений
     msgDB = json.loads(msgDB)
+
+    textb = tkinter.Text(root)
+    textb.pack()
+
+    inputField = tkinter.Entry(root)
+    # self.inputField["command"] = self.sayTest
+    inputField.pack()
+    root.bind('<Return>', sayTest)
+
     for m in msgDB:
-        print(m)
+        textb.insert('end', '\n' + m)
 
-    while True:
-        msg = input()
-        sock.send(msg.encode())  # Отправка сообщений
-        if msg == 'exit':
-            break
-
+    root.mainloop()
+    sock.send(b'exit')
     sock.close()
-except:
-    print('Oops, something went wrong')
+except Exception as e:
+    print('Oops, something went wrong' + e)
