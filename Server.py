@@ -107,7 +107,7 @@ def process_client(client):  # Обработка соединения
             msg = data.decode()
             print(msg)
             msgDB.append(msg)
-            if msg == 'еxit':
+            if msg == 'exit':
                 break
             else:
                 with open(login + '.txt', 'r+') as f:
@@ -124,13 +124,16 @@ try:
     with open('usersDB.txt', 'r+') as f:
         usersDB = json.loads(f.read())
 
+    port = 9090
+    port2 = 7070
+
     sock = socket.socket()  # Конфиг
-    sock.bind(('', 9090))
-    sock.listen(1)
+    sock.bind(('', port))
+    sock.listen(10)
 
     sock2 = socket.socket()  # Конфиг
-    sock2.bind(('', 7070))
-    sock2.listen(1)
+    sock2.bind(('', port2))
+    sock2.listen(5)
 
     client_listen_thread = threading.Thread(target=accept_clients)  # Запуск приёма новых клиентов
     client_listen_thread.start()
