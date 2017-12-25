@@ -2,15 +2,18 @@ import socket
 import json
 from tkinter import *
 import tkinter.simpledialog
+import hmac, hashlib
+from datetime import datetime
 
 root = Tk()
 
 
 def sayTest(event):
     print(inputField.get())
-    msg = inputField.get()
+    now = str(datetime.now())
+    msg = now + ':  ' + inputField.get()
     sock.send(msg.encode())
-    textb.insert('end', '\n' + inputField.get())
+    textb.insert('end', '\n' + msg)
     inputField.delete(0, 'end')
     if msg == 'exit':
         root.destroy()
@@ -31,7 +34,6 @@ try:
 
     while True:
         var = tkinter.simpledialog.askstring("Name prompt", "enter your pass")
-        import hmac, hashlib
         var = hmac.new(bytearray('signature', 'utf-8'), bytearray(var, 'utf-8'), hashlib.sha256).hexdigest()
         sock.send(var.encode())  # Пароль
         status = sock.recv(buffer).decode()

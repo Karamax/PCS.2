@@ -5,6 +5,7 @@ import json
 import  tkinter
 from tkinter import simpledialog as sd
 from tkinter import  *
+import hmac, hashlib
 root = Tk()
 
 work = True
@@ -21,7 +22,6 @@ def addUser():
     print('Enter password')
     #password = input()
     password = sd.askstring("Enter password:", "Enter password")
-    import hmac, hashlib
     password = hmac.new(bytearray('signature', 'utf-8'), bytearray(password, 'utf-8'), hashlib.sha256).hexdigest()
     uData = {'Operation': 'add', 'Login': username, 'Password': password}
     sendData(uData)
